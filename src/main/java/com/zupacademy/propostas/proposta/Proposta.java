@@ -2,10 +2,7 @@ package com.zupacademy.propostas.proposta;
 
 import com.zupacademy.propostas.commos.validations.document.CpfOrCnpj;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,7 +13,7 @@ public class Proposta {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank @CpfOrCnpj
+    @NotBlank @CpfOrCnpj @Column(unique = true)
     private String documento;
     @NotBlank
     private String nome;
@@ -26,6 +23,10 @@ public class Proposta {
     private String endereco;
     @NotNull @Positive
     private Double salario;
+
+    @Deprecated
+    public Proposta() {
+    }
 
     public Proposta(@NotBlank String documento, @NotBlank String nome, @NotBlank @Email String email, @NotBlank String endereco, @NotNull @Positive Double salario) {
         this.documento = documento;
