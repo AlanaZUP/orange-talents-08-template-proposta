@@ -25,7 +25,7 @@ public class CadastraProposta {
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> cadastraProposta(@RequestBody @Valid PropostaRequest propostaRequest, UriComponentsBuilder uriBuilder){
-        Proposta proposta = propostaRequest.toModel();
+        Proposta proposta = propostaRequest.toModel(propostaRepository);
         propostaRepository.save(proposta);
 
         URI uri = uriBuilder.path("/propostas/{id}").build(proposta.getId());
