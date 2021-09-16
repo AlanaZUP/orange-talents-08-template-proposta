@@ -34,4 +34,14 @@ public class ValidationErroHandler {
         return erros;
     }
 
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(ValorDuplicadoException.class)
+    public List<ErroResponseDTO> handleValorDuplicado(ValorDuplicadoException exception){
+        List<ErroResponseDTO> erros = new ArrayList<>();
+        ErroResponseDTO erro = new ErroResponseDTO(exception.getCampo(), exception.getMessage());
+
+        erros.add(erro);
+
+        return erros;
+    }
 }
