@@ -1,4 +1,4 @@
-package com.orangetalents.mercadolivre.comms.exceptions;
+package com.zupacademy.propostas.commos.exceptions;
 
 
 public class ErroResponseDTO {

@@ -1,4 +1,4 @@
-package com.orangetalents.mercadolivre.comms.exceptions;
+package com.zupacademy.propostas.commos.exceptions;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
