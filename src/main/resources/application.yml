@@ -18,3 +18,9 @@ feign:
       nomeFeignClienteDefinidoNoBean:
         read-timeout: 100
         connect-timeout: 100
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
