@@ -1,6 +1,14 @@
 package com.zupacademy.propostas.proposta;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zupacademy.propostas.commos.validations.document.CpfOrCnpj;
+import com.zupacademy.propostas.proposta.cadastra.analisaSolicitacao.AnalisaSolicitacao;
+import com.zupacademy.propostas.proposta.cadastra.analisaSolicitacao.AnalisaSolicitacaoRequest;
+import com.zupacademy.propostas.proposta.cadastra.analisaSolicitacao.AnalisaSolicitacaoResponse;
+import com.zupacademy.propostas.proposta.cadastra.analisaSolicitacao.StatusSolicitacao;
+import feign.FeignException;
+import org.springframework.http.HttpStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -23,6 +31,8 @@ public class Proposta {
     private String endereco;
     @NotNull @Positive
     private Double salario;
+
+    private StatusProposta statusProposta;
 
     @Deprecated
     public Proposta() {
@@ -58,5 +68,25 @@ public class Proposta {
 
     public Double getSalario() {
         return salario;
+    }
+
+    public void analisaSolicitacao(AnalisaSolicitacao analisaSolicitacao) throws JsonProcessingException {
+        AnalisaSolicitacaoRequest solicitacaoRequest = new AnalisaSolicitacaoRequest(this.documento, this.nome, this.id);
+        AnalisaSolicitacaoResponse solicitacaoResponse;
+        try{
+            solicitacaoResponse = analisaSolicitacao.consultar(solicitacaoRequest);
+            this.statusProposta = StatusProposta.ELEGIVEL;
+        }
+        catch (FeignException feignException){
+            int status = feignException.status();
+            if(HttpStatus.UNPROCESSABLE_ENTITY.value() == feignException.status()){
+                ObjectMapper objectMapper = new ObjectMapper();
+                solicitacaoResponse = objectMapper.readValue(feignException.contentUTF8(), AnalisaSolicitacaoResponse.class);
+            }
+            else{
+                throw feignException;
+            }
+        }
+        this.statusProposta = solicitacaoResponse.getStatusProposta();
     }
 }
