@@ -1,4 +1,4 @@
-package com.orangetalents.mercadolivre.comms.anotations;
+package com.zupacademy.propostas.commos.validations.existsId;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
