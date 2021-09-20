@@ -11,3 +11,10 @@ spring:
     properties:
       hibernate:
         driverClassName: org.postgresql.Driver
+
+feign:
+  client:
+    config:
+      nomeFeignClienteDefinidoNoBean:
+        read-timeout: 100
+        connect-timeout: 100
