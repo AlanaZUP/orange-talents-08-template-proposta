@@ -2,6 +2,7 @@ package com.zupacademy.propostas.proposta;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zupacademy.propostas.cartao.Cartao;
 import com.zupacademy.propostas.commos.validations.document.CpfOrCnpj;
 import com.zupacademy.propostas.proposta.cadastra.analisaSolicitacao.AnalisaSolicitacao;
 import com.zupacademy.propostas.proposta.cadastra.analisaSolicitacao.AnalisaSolicitacaoRequest;
@@ -31,6 +32,8 @@ public class Proposta {
     private String endereco;
     @NotNull @Positive
     private Double salario;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Cartao cartao;
 
     private StatusProposta statusProposta;
 
@@ -75,7 +78,6 @@ public class Proposta {
         AnalisaSolicitacaoResponse solicitacaoResponse;
         try{
             solicitacaoResponse = analisaSolicitacao.consultar(solicitacaoRequest);
-            this.statusProposta = StatusProposta.ELEGIVEL;
         }
         catch (FeignException feignException){
             int status = feignException.status();
@@ -88,5 +90,9 @@ public class Proposta {
             }
         }
         this.statusProposta = solicitacaoResponse.getStatusProposta();
+    }
+
+    public void adicionaCartao(Cartao cartao) {
+        this.cartao=cartao;
     }
 }
