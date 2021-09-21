@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,14 +35,14 @@ public class ValidationErroHandler {
         return erros;
     }
 
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    @ExceptionHandler(ValorDuplicadoException.class)
-    public List<ErroResponseDTO> handleValorDuplicado(ValorDuplicadoException exception){
+
+    @ExceptionHandler(ApiErroException.class)
+    public ResponseEntity<List<ErroResponseDTO>> handleValorDuplicado(ApiErroException exception){
         List<ErroResponseDTO> erros = new ArrayList<>();
         ErroResponseDTO erro = new ErroResponseDTO(exception.getCampo(), exception.getMessage());
 
         erros.add(erro);
 
-        return erros;
+        return ResponseEntity.status(exception.getHttpStatus()).body(erros);
     }
 }
