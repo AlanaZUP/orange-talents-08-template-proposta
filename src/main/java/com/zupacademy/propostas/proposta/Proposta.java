@@ -95,4 +95,12 @@ public class Proposta {
     public void adicionaCartao(Cartao cartao) {
         this.cartao=cartao;
     }
+
+    public Cartao getCartao() {
+        return cartao;
+    }
+
+    public StatusProposta getStatusProposta() {
+        return statusProposta;
+    }
 }
