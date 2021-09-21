@@ -1,9 +1,10 @@
 package com.zupacademy.propostas.proposta.cadastra;
 
-import com.zupacademy.propostas.commos.exceptions.ValorDuplicadoException;
+import com.zupacademy.propostas.commos.exceptions.ApiErroException;
 import com.zupacademy.propostas.commos.validations.document.CpfOrCnpj;
 import com.zupacademy.propostas.proposta.Proposta;
 import com.zupacademy.propostas.proposta.PropostaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.Email;
@@ -37,7 +38,7 @@ public class PropostaRequest {
         List<Proposta> propostas = propostaRepository.findByDocumento(this.documento);
 
         if (propostas.size() == 1){
-            throw new ValorDuplicadoException("documento", "Já existe um documento com esse valor.");
+            throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "documento", "Já existe um documento com esse valor.");
         }
         Assert.isTrue(propostas.size() == 0, "Bug geral, existe mais de uma proposta com esse documento :o !!");
 
