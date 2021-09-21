@@ -7,4 +7,6 @@ import java.util.List;
 public interface PropostaRepository extends JpaRepository<Proposta, Long> {
 
     List<Proposta> findByDocumento(String documento);
+
+    List<Proposta> findBystatusPropostaAndCartaoIsNull(StatusProposta statusProposta);
 }
