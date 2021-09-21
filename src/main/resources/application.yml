@@ -1,9 +1,9 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/keycloak
-    username: keycloak
-    password: password
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/keycloak}
+    username: ${SPRING_DATASOURCE_USERNAME:keycloak}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
   jpa:
     show-sql: true
     hibernate:
@@ -30,4 +30,4 @@ management:
 
 
 periodicidade:
-  observa-cartao: ${PERIODICIDADE_OBSERVA_CARTAO:1000}
+  observa-cartao: ${PERIODICIDADE_OBSERVA_CARTAO:1000000}
