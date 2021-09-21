@@ -39,4 +39,24 @@ public class Cartao {
         this.emitidoEm = emitidoEm;
         this.limite = limite;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNumeroCartao() {
+        return numeroCartao;
+    }
+
+    public String getTitular() {
+        return titular;
+    }
+
+    public LocalDateTime getEmitidoEm() {
+        return emitidoEm;
+    }
+
+    public BigDecimal getLimite() {
+        return limite;
+    }
 }
