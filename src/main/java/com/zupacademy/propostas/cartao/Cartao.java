@@ -1,10 +1,14 @@
 package com.zupacademy.propostas.cartao;
 
+import com.zupacademy.propostas.cartao.biometria.Biometria;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Cartao {
@@ -28,6 +32,9 @@ public class Cartao {
     @NotNull
     @Column(nullable = false)
     private BigDecimal limite;
+
+    @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+    private List<Biometria> biometrias = new ArrayList<>();
 
     @Deprecated
     public Cartao() {
@@ -58,5 +65,9 @@ public class Cartao {
 
     public BigDecimal getLimite() {
         return limite;
+    }
+
+    public void adicionaBiomatria(Biometria biometria) {
+        this.biometrias.add(biometria);
     }
 }
