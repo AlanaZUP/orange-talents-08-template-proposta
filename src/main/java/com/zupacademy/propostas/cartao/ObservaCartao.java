@@ -4,6 +4,7 @@ import com.zupacademy.propostas.proposta.Proposta;
 import com.zupacademy.propostas.proposta.PropostaRepository;
 import com.zupacademy.propostas.proposta.StatusProposta;
 import feign.FeignException;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
