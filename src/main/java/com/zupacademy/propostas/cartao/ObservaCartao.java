@@ -28,7 +28,7 @@ public class ObservaCartao {
             SolicitaCartaoRequest cartaoRequest = new SolicitaCartaoRequest(proposta.getDocumento(), proposta.getNome(), proposta.getId());
             try{
                 SolicitaCartaoResponse cartaoResponse = solicitaCartao.solicita(cartaoRequest);
-                Cartao cartao = cartaoResponse.toModel();
+                Cartao cartao = cartaoResponse.toModel(proposta);
                 proposta.adicionaCartao(cartao);
                 propostaRepository.save(proposta);
                 System.out.println("Consegui um cartao");

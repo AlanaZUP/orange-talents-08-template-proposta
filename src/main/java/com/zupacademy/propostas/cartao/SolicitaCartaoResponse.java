@@ -1,5 +1,7 @@
 package com.zupacademy.propostas.cartao;
 
+import com.zupacademy.propostas.proposta.Proposta;
+
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -36,7 +38,7 @@ public class SolicitaCartaoResponse {
         return limite;
     }
 
-    public Cartao toModel(){
-        return new Cartao(this.id, this.titular, this.emitidoEm, this.limite);
+    public Cartao toModel(Proposta proposta){
+        return new Cartao(proposta, this.id, this.titular, this.emitidoEm, this.limite);
     }
 }
