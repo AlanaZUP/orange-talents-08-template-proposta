@@ -2,6 +2,7 @@ package com.zupacademy.propostas.cartao;
 
 import com.zupacademy.propostas.cartao.biometria.Biometria;
 import com.zupacademy.propostas.cartao.bloqueio.Bloqueio;
+import com.zupacademy.propostas.cartao.bloqueio.ValidaRequisicao;
 import com.zupacademy.propostas.commos.exceptions.ApiErroException;
 import com.zupacademy.propostas.proposta.Proposta;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,19 @@ public class Cartao {
         this.titular = titular;
         this.emitidoEm = emitidoEm;
         this.limite = limite;
+        this.statusCartao = StatusCartao.ATIVO;
+    }
+
+    public StatusCartao getStatusCartao() {
+        return statusCartao;
+    }
+
+    public List<Biometria> getBiometrias() {
+        return biometrias;
+    }
+
+    public List<Bloqueio> getBloqueios() {
+        return bloqueios;
     }
 
     public Long getId() {
@@ -87,25 +101,27 @@ public class Cartao {
         this.biometrias.add(biometria);
     }
 
-    public void bloqueia(HttpServletRequest request, Jwt jwt) {
+    public void bloqueia(HttpServletRequest request, String ip, String userAgent, String documento) {
+        cartaoBloqueado();
+        cartaoPertenceAoRequisitante(documento);
+        Bloqueio bloqueio = new Bloqueio(this, ip, userAgent);
+        adicionaBloqueio(bloqueio);
+        statusCartao = StatusCartao.BLOQUEADO;
+    }
+
+    private void adicionaBloqueio(Bloqueio bloqueio) {
+        this.bloqueios.add(bloqueio);
+    }
+
+    private void cartaoPertenceAoRequisitante(String documento) {
+        if(!this.proposta.getDocumento().equals(documento)){
+            throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "documento", "Cartão não pertence ao usuário logado");
+        }
+    }
+
+    private void cartaoBloqueado() {
         if(statusCartao.equals(StatusCartao.BLOQUEADO)){
             throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "statusCartao", "Cartão já está bloqueado");
         }
-        String documento = jwt.getClaim("documento");
-        if(!this.proposta.getDocumento().equals(documento)){
-            throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "", "Cartão não pertence ao usuário logado");
-        }
-
-        String IP = request.getRemoteAddr();
-        String userAgent = request.getHeader("User-Agent");
-        if(IP.isBlank()){
-            throw new ApiErroException(HttpStatus.BAD_REQUEST, "IP", "O IP da requisição não foi encontrado");
-        }
-        if(userAgent.isBlank()){
-            throw new ApiErroException(HttpStatus.BAD_REQUEST, "userAgent", "O User-Agent da requisição não foi encontrado");
-        }
-
-        Bloqueio bloqueio = new Bloqueio(this, IP, userAgent);
-
     }
 }

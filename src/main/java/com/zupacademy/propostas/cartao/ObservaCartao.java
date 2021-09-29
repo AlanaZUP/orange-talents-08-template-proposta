@@ -34,6 +34,7 @@ public class ObservaCartao {
                 System.out.println("Consegui um cartao");
             }
             catch (FeignException feignException){
+                System.out.println(feignException);
                 System.out.println("Nao consegui um cartao");
             }
         });

@@ -23,10 +23,30 @@ public class Bloqueio {
 
     private LocalDateTime instante;
 
+    @Deprecated
+    public Bloqueio() {
+    }
+
     public Bloqueio(Cartao cartao, String ip, String userAgent) {
         this.cartao = cartao;
         this.ip = ip;
         this.userAgent = userAgent;
         this.instante = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public LocalDateTime getInstante() {
+        return instante;
     }
 }
