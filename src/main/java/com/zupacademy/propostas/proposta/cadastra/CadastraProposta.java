@@ -2,6 +2,7 @@ package com.zupacademy.propostas.proposta.cadastra;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.zupacademy.propostas.commos.logs.LogExample;
+import com.zupacademy.propostas.commos.metrics.PropostaMetrics;
 import com.zupacademy.propostas.proposta.Proposta;
 import com.zupacademy.propostas.proposta.PropostaRepository;
 import com.zupacademy.propostas.proposta.cadastra.analisaSolicitacao.AnalisaSolicitacao;
@@ -26,6 +27,9 @@ public class CadastraProposta {
     @Autowired
     private AnalisaSolicitacao analisaSolicitacao;
 
+    @Autowired
+    private PropostaMetrics propostaMetrics;
+
     private final Logger logger = LoggerFactory.getLogger(LogExample.class);
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
@@ -39,6 +43,9 @@ public class CadastraProposta {
         URI uri = uriBuilder.path("/propostas/{id}").build(proposta.getId());
 
         logger.info("Proposta documento={} salário={} criada com sucesso!", proposta.getDocumento(), proposta.getSalario());
+
+        propostaMetrics.contadorPropostas();
+
         return ResponseEntity.created(uri).build();
     }
 }
