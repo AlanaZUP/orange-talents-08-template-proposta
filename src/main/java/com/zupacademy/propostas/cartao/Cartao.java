@@ -2,6 +2,9 @@ package com.zupacademy.propostas.cartao;
 
 import com.zupacademy.propostas.cartao.biometria.Biometria;
 import com.zupacademy.propostas.cartao.bloqueio.*;
+import com.zupacademy.propostas.cartao.viagem.NotificaViagem;
+import com.zupacademy.propostas.cartao.viagem.NotificaViagemRequest;
+import com.zupacademy.propostas.cartao.viagem.NotificaViagemResponse;
 import com.zupacademy.propostas.cartao.viagem.Viagem;
 import com.zupacademy.propostas.commos.exceptions.ApiErroException;
 import com.zupacademy.propostas.proposta.Proposta;
@@ -142,8 +145,15 @@ public class Cartao {
         }
     }
 
-    public void adicionaViagem(Viagem viagem, String documento) {
+    public void adicionaViagem(Viagem viagem, String documento, NotificaViagem notificaViagem) {
         cartaoPertenceAoRequisitante(documento);
-        viagens.add(viagem);
+        NotificaViagemRequest notificaViagemRequest = new NotificaViagemRequest(viagem.getDestinoViagem(), viagem.getDateTermino());
+        try{
+            NotificaViagemResponse notificaViagemResponse = notificaViagem.notificaViagem(this.numeroCartao, notificaViagemRequest);
+            viagens.add(viagem);
+        }
+        catch (FeignException feignException){
+            throw new ApiErroException(HttpStatus.INTERNAL_SERVER_ERROR,"", "Não foi possível notificar a viagem ao sistema legado, tente novamente mais tarde");
+        }
     }
 }
