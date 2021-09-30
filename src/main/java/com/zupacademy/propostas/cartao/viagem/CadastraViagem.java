@@ -24,6 +24,9 @@ public class CadastraViagem {
     @Autowired
     private ValidaRequisicao validaRequisicao;
 
+    @Autowired
+    private NotificaViagem notificaViagem;
+
     @PostMapping("/{id}/viagens")
     @ResponseStatus(HttpStatus.OK)
     @Transactional
@@ -31,7 +34,7 @@ public class CadastraViagem {
         Cartao cartao = cartaoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existe cartão com o identificador informado"));
         validaRequisicao.valida(request, jwt);
         Viagem viagem = viagemRequest.toModel(request.getRemoteAddr(), request.getHeader("User-Agent"), cartao);
-        cartao.adicionaViagem(viagem, jwt.getClaim("documento"));
+        cartao.adicionaViagem(viagem, jwt.getClaim("documento"), notificaViagem);
         cartaoRepository.save(cartao);
     }
 }
