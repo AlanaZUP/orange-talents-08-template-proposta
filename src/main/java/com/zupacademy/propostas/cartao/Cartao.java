@@ -2,6 +2,7 @@ package com.zupacademy.propostas.cartao;
 
 import com.zupacademy.propostas.cartao.biometria.Biometria;
 import com.zupacademy.propostas.cartao.bloqueio.*;
+import com.zupacademy.propostas.cartao.viagem.Viagem;
 import com.zupacademy.propostas.commos.exceptions.ApiErroException;
 import com.zupacademy.propostas.proposta.Proposta;
 import feign.FeignException;
@@ -52,6 +53,9 @@ public class Cartao {
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
     private List<Bloqueio> bloqueios = new ArrayList<>();
 
+    @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+    private List<Viagem> viagens = new ArrayList<>();
+
     @Deprecated
     public Cartao() {
     }
@@ -97,6 +101,10 @@ public class Cartao {
         return limite;
     }
 
+    public List<Viagem> getViagens() {
+        return viagens;
+    }
+
     public void adicionaBiomatria(Biometria biometria) {
         this.biometrias.add(biometria);
     }
@@ -132,5 +140,10 @@ public class Cartao {
         if(statusCartao.equals(StatusCartao.BLOQUEADO)){
             throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "statusCartao", "Cartão já está bloqueado");
         }
+    }
+
+    public void adicionaViagem(Viagem viagem, String documento) {
+        cartaoPertenceAoRequisitante(documento);
+        viagens.add(viagem);
     }
 }
