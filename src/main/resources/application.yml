@@ -33,6 +33,15 @@ management:
     web:
       exposure:
         include: "*"
+    prometheus:
+      enabled: true
+
+  metrics:
+    tags:
+      aplicacao: ${METRICS_TAG_APLICACAO:proposta}
+      ambiente: ${METRICS_TAG_AMBIENTE:desenvolvimento}
+
+
 
 
 periodicidade:
