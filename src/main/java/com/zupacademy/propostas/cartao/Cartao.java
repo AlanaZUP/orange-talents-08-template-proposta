@@ -1,10 +1,10 @@
 package com.zupacademy.propostas.cartao;
 
 import com.zupacademy.propostas.cartao.biometria.Biometria;
-import com.zupacademy.propostas.cartao.bloqueio.Bloqueio;
-import com.zupacademy.propostas.cartao.bloqueio.ValidaRequisicao;
+import com.zupacademy.propostas.cartao.bloqueio.*;
 import com.zupacademy.propostas.commos.exceptions.ApiErroException;
 import com.zupacademy.propostas.proposta.Proposta;
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
 
@@ -101,12 +101,21 @@ public class Cartao {
         this.biometrias.add(biometria);
     }
 
-    public void bloqueia(HttpServletRequest request, String ip, String userAgent, String documento) {
-        cartaoBloqueado();
+    public void bloqueia(HttpServletRequest request, String ip, String userAgent, String documento, NotificaBloqueio notificaBloqueio) {
         cartaoPertenceAoRequisitante(documento);
-        Bloqueio bloqueio = new Bloqueio(this, ip, userAgent);
-        adicionaBloqueio(bloqueio);
-        statusCartao = StatusCartao.BLOQUEADO;
+        cartaoBloqueado();
+        try{
+            NotificaRequest notificaRequest = new NotificaRequest("proposta");
+            NotificaResponse notificaResponse = notificaBloqueio.notifica(this.numeroCartao, notificaRequest);
+
+            Bloqueio bloqueio = new Bloqueio(this, ip, userAgent);
+            adicionaBloqueio(bloqueio);
+            statusCartao = StatusCartao.BLOQUEADO;
+        }
+        catch (FeignException feignException){
+            System.out.println(feignException);
+            throw new ApiErroException(HttpStatus.INTERNAL_SERVER_ERROR, "", "Não foi possível notificar sistema legado banco");
+        }
     }
 
     private void adicionaBloqueio(Bloqueio bloqueio) {

@@ -23,6 +23,9 @@ public class BloqueioController {
     @Autowired
     private ValidaRequisicao validaRequisicao;
 
+    @Autowired
+    private NotificaBloqueio notificaBloqueio;
+
     @PostMapping("/{id}/bloqueio")
     @ResponseStatus(HttpStatus.OK)
     @Transactional
@@ -30,7 +33,7 @@ public class BloqueioController {
         Cartao cartao = cartaoRepository.findById(idCartao).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existe cartão com a identificação informada"));
 
         validaRequisicao.valida(request, jwt);
-        cartao.bloqueia(request, request.getRemoteAddr(), request.getHeader("User-Agent"), jwt.getClaim("documento")    );
+        cartao.bloqueia(request, request.getRemoteAddr(), request.getHeader("User-Agent"), jwt.getClaim("documento"), notificaBloqueio);
         cartaoRepository.save(cartao);
     }
 }
