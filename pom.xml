@@ -61,6 +61,11 @@
 			<artifactId>spring-security-oauth2-jose</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-feign</artifactId>
+			<version>1.4.7.RELEASE</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -73,10 +78,21 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
 
+<!--		<dependency>-->
+<!--			<groupId>io.opentracing.contrib</groupId>-->
+<!--			<artifactId>opentracing-spring-jaeger-cloud-starter</artifactId>-->
+<!--			<version>3.2.2</version>-->
+<!--		</dependency>-->
+
 		<dependency>
 			<groupId>io.opentracing.contrib</groupId>
-			<artifactId>opentracing-spring-jaeger-cloud-starter</artifactId>
-			<version>3.2.2</version>
+			<artifactId>opentracing-jdbc</artifactId>
+			<version>0.2.15</version>
+		</dependency>
+		<dependency>
+			<groupId>io.opentracing.contrib</groupId>
+			<artifactId>opentracing-spring-jaeger-web-starter</artifactId>
+			<version>3.3.1</version>
 		</dependency>
 	</dependencies>
 
