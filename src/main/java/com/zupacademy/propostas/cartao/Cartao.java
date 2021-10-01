@@ -2,6 +2,7 @@ package com.zupacademy.propostas.cartao;
 
 import com.zupacademy.propostas.cartao.biometria.Biometria;
 import com.zupacademy.propostas.cartao.bloqueio.*;
+import com.zupacademy.propostas.cartao.carteira.*;
 import com.zupacademy.propostas.cartao.viagem.NotificaViagem;
 import com.zupacademy.propostas.cartao.viagem.NotificaViagemRequest;
 import com.zupacademy.propostas.cartao.viagem.NotificaViagemResponse;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Cartao {
@@ -58,6 +60,9 @@ public class Cartao {
 
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
     private List<Viagem> viagens = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+    private List<Carteira> carteiras = new ArrayList<>();
 
     @Deprecated
     public Cartao() {
@@ -155,5 +160,38 @@ public class Cartao {
         catch (FeignException feignException){
             throw new ApiErroException(HttpStatus.INTERNAL_SERVER_ERROR,"", "Não foi possível notificar a viagem ao sistema legado, tente novamente mais tarde");
         }
+    }
+
+    public void adicionarCarteira(Carteira carteira, NotificaCarteira notificaCarteira) {
+
+        if(possuiCarteira(carteira.getCarteira())){
+            throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "carteira", "Já existe essa carteira nesse cartão");
+        }
+
+        NotificaCarteiraRequest notificaCarteiraRequest = new NotificaCarteiraRequest(carteira.getEmail(), carteira.getCarteira());
+        try{
+            NotificaCarteiraResponse notificaCarteiraResponse = notificaCarteira.notifica(this.numeroCartao, notificaCarteiraRequest);
+            carteira.setIdCarteira(notificaCarteiraResponse.getId());
+            this.addCarteiras(carteira);
+        }
+        catch (FeignException feignException){
+            System.out.println(feignException);
+            throw new ApiErroException(HttpStatus.INTERNAL_SERVER_ERROR,"" ,"Não foi possível notificar o sistema legado, tente novamente mais tarde");
+        }
+    }
+
+    public boolean possuiCarteira(EnumCarteiras enumCarteiras){
+        return this.carteiras.stream()
+                .filter(carteira -> carteira.getCarteira().equals(enumCarteiras))
+                .collect(Collectors.toList())
+                .size() > 0;
+    }
+
+    private void addCarteiras(Carteira carteira) {
+        this.carteiras.add(carteira);
+    }
+
+    public List<Carteira> getCarteiras() {
+        return carteiras;
     }
 }
