@@ -3,6 +3,8 @@ package com.zupacademy.propostas.cartao.viagem;
 import com.zupacademy.propostas.cartao.Cartao;
 import com.zupacademy.propostas.cartao.CartaoRepository;
 import com.zupacademy.propostas.cartao.bloqueio.ValidaRequisicao;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +29,9 @@ public class CadastraViagem {
     @Autowired
     private NotificaViagem notificaViagem;
 
+    @Autowired
+    private Tracer tracer;
+
     @PostMapping("/{id}/viagens")
     @ResponseStatus(HttpStatus.OK)
     @Transactional
@@ -36,5 +41,10 @@ public class CadastraViagem {
         Viagem viagem = viagemRequest.toModel(request.getRemoteAddr(), request.getHeader("User-Agent"), cartao);
         cartao.adicionaViagem(viagem, jwt.getClaim("documento"), notificaViagem);
         cartaoRepository.save(cartao);
+
+
+        Span activeSpan = tracer.activeSpan();
+        activeSpan.setBaggageItem("user.email", cartao.getProposta().getEmail());
+
     }
 }

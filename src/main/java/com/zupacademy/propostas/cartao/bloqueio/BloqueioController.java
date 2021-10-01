@@ -3,6 +3,8 @@ package com.zupacademy.propostas.cartao.bloqueio;
 import com.zupacademy.propostas.cartao.Cartao;
 import com.zupacademy.propostas.cartao.CartaoRepository;
 import com.zupacademy.propostas.commos.exceptions.ApiErroException;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +28,9 @@ public class BloqueioController {
     @Autowired
     private NotificaBloqueio notificaBloqueio;
 
+    @Autowired
+    private Tracer tracer;
+
     @PostMapping("/{id}/bloqueio")
     @ResponseStatus(HttpStatus.OK)
     @Transactional
@@ -35,5 +40,9 @@ public class BloqueioController {
         validaRequisicao.valida(request, jwt);
         cartao.bloqueia(request, request.getRemoteAddr(), request.getHeader("User-Agent"), jwt.getClaim("documento"), notificaBloqueio);
         cartaoRepository.save(cartao);
+
+        Span activeSpan = tracer.activeSpan();
+        activeSpan.setBaggageItem("user.email", cartao.getProposta().getEmail());
+
     }
 }

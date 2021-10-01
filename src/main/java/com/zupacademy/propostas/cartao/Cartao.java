@@ -1,5 +1,6 @@
 package com.zupacademy.propostas.cartao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zupacademy.propostas.cartao.biometria.Biometria;
 import com.zupacademy.propostas.cartao.bloqueio.*;
 import com.zupacademy.propostas.cartao.carteira.*;
@@ -50,6 +51,7 @@ public class Cartao {
 
     @OneToOne
     @NotNull
+    @JsonIgnore
     private Proposta proposta;
 
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
@@ -111,6 +113,10 @@ public class Cartao {
 
     public List<Viagem> getViagens() {
         return viagens;
+    }
+
+    public Proposta getProposta() {
+        return proposta;
     }
 
     public void adicionaBiomatria(Biometria biometria) {

@@ -6,6 +6,8 @@ import com.zupacademy.propostas.commos.metrics.PropostaMetrics;
 import com.zupacademy.propostas.proposta.Proposta;
 import com.zupacademy.propostas.proposta.PropostaRepository;
 import com.zupacademy.propostas.proposta.cadastra.analisaSolicitacao.AnalisaSolicitacao;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class CadastraProposta {
     @Autowired
     private PropostaMetrics propostaMetrics;
 
+    @Autowired
+    private Tracer tracer;
+
     private final Logger logger = LoggerFactory.getLogger(LogExample.class);
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
@@ -45,6 +50,9 @@ public class CadastraProposta {
         logger.info("Proposta documento={} salário={} criada com sucesso!", proposta.getDocumento(), proposta.getSalario());
 
         propostaMetrics.contadorPropostas();
+
+        Span activeSpan = tracer.activeSpan();
+        activeSpan.setBaggageItem("user.email", proposta.getEmail());
 
         return ResponseEntity.created(uri).build();
     }
