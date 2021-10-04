@@ -22,7 +22,7 @@ public class Proposta {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank @CpfOrCnpj @Column(unique = true)
+    @NotBlank @Column(unique = true)
     private String documento;
     @NotBlank
     private String nome;
@@ -41,6 +41,13 @@ public class Proposta {
     public Proposta() {
     }
 
+    /**
+     * @param documento -> valor já deve estar encriptografado
+     * @param nome
+     * @param email
+     * @param endereco
+     * @param salario
+     * */
     public Proposta(@NotBlank String documento, @NotBlank String nome, @NotBlank @Email String email, @NotBlank String endereco, @NotNull @Positive Double salario) {
         this.documento = documento;
         this.nome = nome;

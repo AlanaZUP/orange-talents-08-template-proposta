@@ -1,6 +1,7 @@
 package com.zupacademy.propostas.proposta.cadastra;
 
 import com.zupacademy.propostas.commos.exceptions.ApiErroException;
+import com.zupacademy.propostas.commos.seguranca.DadosCrypto;
 import com.zupacademy.propostas.commos.validations.document.CpfOrCnpj;
 import com.zupacademy.propostas.proposta.Proposta;
 import com.zupacademy.propostas.proposta.PropostaRepository;
@@ -35,13 +36,15 @@ public class PropostaRequest {
     }
 
     public Proposta toModel(PropostaRepository propostaRepository){
-        List<Proposta> propostas = propostaRepository.findByDocumento(this.documento);
+        DadosCrypto dadosCrypto = new DadosCrypto();
+        String documentoCrypto = dadosCrypto.encrytor(documento);
+        List<Proposta> propostas = propostaRepository.findByDocumento(documentoCrypto);
 
         if (propostas.size() == 1){
             throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "documento", "Já existe um documento com esse valor.");
         }
         Assert.isTrue(propostas.size() == 0, "Bug geral, existe mais de uma proposta com esse documento :o !!");
 
-        return new Proposta(documento, nome, email, endereco, salario);
+        return new Proposta(documentoCrypto, nome, email, endereco, salario);
     }
 }

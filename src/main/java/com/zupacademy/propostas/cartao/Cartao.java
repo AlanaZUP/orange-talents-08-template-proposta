@@ -9,6 +9,7 @@ import com.zupacademy.propostas.cartao.viagem.NotificaViagemRequest;
 import com.zupacademy.propostas.cartao.viagem.NotificaViagemResponse;
 import com.zupacademy.propostas.cartao.viagem.Viagem;
 import com.zupacademy.propostas.commos.exceptions.ApiErroException;
+import com.zupacademy.propostas.commos.seguranca.DadosCrypto;
 import com.zupacademy.propostas.proposta.Proposta;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
@@ -145,9 +146,12 @@ public class Cartao {
     }
 
     private void cartaoPertenceAoRequisitante(String documento) {
-        if(!this.proposta.getDocumento().equals(documento)){
-            throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "documento", "Cartão não pertence ao usuário logado");
+        DadosCrypto dadosCrypto = new DadosCrypto();
+
+        if(dadosCrypto.equals(this.proposta.getDocumento(), documento)){
+            return;
         }
+        throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "documento", "Cartão não pertence ao usuário logado");
     }
 
     private void cartaoBloqueado() {
