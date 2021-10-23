@@ -22,21 +22,26 @@ public class ObservaCartao {
 
     @Scheduled(fixedDelayString = "${periodicidade.observa-cartao}")
     public void observa(){
-        List<Proposta> propostasAll = propostaRepository.findAll();
-        List<Proposta> propostas = propostaRepository.findBystatusPropostaAndCartaoIsNull(StatusProposta.ELEGIVEL);
-        propostas.forEach(proposta -> {
-            SolicitaCartaoRequest cartaoRequest = new SolicitaCartaoRequest(proposta.getDocumento(), proposta.getNome(), proposta.getId());
-            try{
-                SolicitaCartaoResponse cartaoResponse = solicitaCartao.solicita(cartaoRequest);
-                Cartao cartao = cartaoResponse.toModel(proposta);
-                proposta.adicionaCartao(cartao);
-                propostaRepository.save(proposta);
-                System.out.println("Consegui um cartao");
-            }
-            catch (FeignException feignException){
-                System.out.println(feignException);
-                System.out.println("Nao consegui um cartao");
-            }
-        });
+        while (true){
+            List<Proposta> propostas = propostaRepository.findTop100BystatusPropostaAndCartaoIsNull(StatusProposta.ELEGIVEL);
+
+            if(propostas.isEmpty())
+                return;
+
+            propostas.forEach(proposta -> {
+                SolicitaCartaoRequest cartaoRequest = new SolicitaCartaoRequest(proposta.getDocumento(), proposta.getNome(), proposta.getId());
+                try{
+                    SolicitaCartaoResponse cartaoResponse = solicitaCartao.solicita(cartaoRequest);
+                    Cartao cartao = cartaoResponse.toModel(proposta);
+                    proposta.adicionaCartao(cartao);
+                    propostaRepository.save(proposta);
+                    System.out.println("Consegui um cartao");
+                }
+                catch (FeignException feignException){
+                    System.out.println(feignException);
+                    System.out.println("Nao consegui um cartao");
+                }
+            });
+        }
     }
 }
