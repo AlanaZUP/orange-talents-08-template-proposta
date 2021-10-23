@@ -1,12 +1,12 @@
 package com.zupacademy.propostas.commos.exceptions;
 
 
-public class ErroResponseDTO {
+public class ErroResponse {
     private String field;
     private Object value;
     private String message;
 
-    public ErroResponseDTO(String field, Object value, String message) {
+    public ErroResponse(String field, Object value, String message) {
         this.field = field;
         this.value = value;
         this.message = message;
@@ -21,5 +21,14 @@ public class ErroResponseDTO {
     }
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return "ErroResponse{" +
+                "field='" + field + '\'' +
+                ", value=" + value +
+                ", message='" + message + '\'' +
+                '}';
     }
 }
