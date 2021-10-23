@@ -1,6 +1,6 @@
 package com.zupacademy.propostas.proposta.cadastra;
 
-import com.zupacademy.propostas.commos.exceptions.ApiErroException;
+import com.zupacademy.propostas.commos.exceptions.RegraDeNegocioException;
 import com.zupacademy.propostas.commos.seguranca.DadosCrypto;
 import com.zupacademy.propostas.commos.validations.document.CpfOrCnpj;
 import com.zupacademy.propostas.proposta.Proposta;
@@ -41,7 +41,7 @@ public class PropostaRequest {
         List<Proposta> propostas = propostaRepository.findByDocumento(documentoCrypto);
 
         if (propostas.size() == 1){
-            throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "documento", "Já existe um documento com esse valor.");
+            throw new RegraDeNegocioException("documento", "Já existe um documento com esse valor.", this.documento);
         }
         Assert.isTrue(propostas.size() == 0, "Bug geral, existe mais de uma proposta com esse documento :o !!");
 

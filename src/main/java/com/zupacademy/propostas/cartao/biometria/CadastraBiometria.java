@@ -2,6 +2,7 @@ package com.zupacademy.propostas.cartao.biometria;
 
 import com.zupacademy.propostas.cartao.Cartao;
 import com.zupacademy.propostas.cartao.CartaoRepository;
+import com.zupacademy.propostas.commos.exceptions.NotFoundException;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class CadastraBiometria {
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
     public ResponseEntity cadastraBiometria(@PathVariable("id") Long idCartao, @RequestBody @Valid BiometriaRequest biometriaRequest, UriComponentsBuilder uriBuilder){
-        Cartao cartao = cartaoRepository.findById(idCartao).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi encontrado um cartão com o id informado"));
+        Cartao cartao = cartaoRepository.findById(idCartao).orElseThrow(() -> new NotFoundException("Cartao", "id", idCartao));
         Biometria biometria = biometriaRequest.toModel(cartao);
         cartao.adicionaBiomatria(biometria);
 
@@ -39,7 +40,7 @@ public class CadastraBiometria {
         activeSpan.setBaggageItem("user.email", cartao.getProposta().getEmail());
 
 
-        URI uri = uriBuilder.path("/cartoes/{idCartao}/biometrias/{idBiomatrie}").build(cartao.getId(), biometria.getUuid());
+        URI uri = uriBuilder.path("/cartoes/{idCartao}/biometrias/{idBiometria}").build(cartao.getId(), biometria.getUuid());
         return ResponseEntity.created(uri).build();
     }
 }

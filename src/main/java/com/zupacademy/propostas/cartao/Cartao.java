@@ -8,12 +8,12 @@ import com.zupacademy.propostas.cartao.viagem.NotificaViagem;
 import com.zupacademy.propostas.cartao.viagem.NotificaViagemRequest;
 import com.zupacademy.propostas.cartao.viagem.NotificaViagemResponse;
 import com.zupacademy.propostas.cartao.viagem.Viagem;
-import com.zupacademy.propostas.commos.exceptions.ApiErroException;
+import com.zupacademy.propostas.commos.exceptions.RegraDeNegocioException;
 import com.zupacademy.propostas.commos.seguranca.DadosCrypto;
 import com.zupacademy.propostas.proposta.Proposta;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.*;
 import javax.servlet.http.HttpServletRequest;
@@ -137,7 +137,7 @@ public class Cartao {
         }
         catch (FeignException feignException){
             System.out.println(feignException);
-            throw new ApiErroException(HttpStatus.INTERNAL_SERVER_ERROR, "", "Não foi possível notificar sistema legado banco");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Não foi possível notificar sistema legado banco");
         }
     }
 
@@ -151,12 +151,12 @@ public class Cartao {
         if(dadosCrypto.equals(this.proposta.getDocumento(), documento)){
             return;
         }
-        throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "documento", "Cartão não pertence ao usuário logado");
+        throw new RegraDeNegocioException("", "Cartão não pertence ao usuário logado", "");
     }
 
     private void cartaoBloqueado() {
         if(statusCartao.equals(StatusCartao.BLOQUEADO)){
-            throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "statusCartao", "Cartão já está bloqueado");
+            throw new RegraDeNegocioException( "statusCartao", "Cartão já está bloqueado", statusCartao);
         }
     }
 
@@ -168,14 +168,14 @@ public class Cartao {
             viagens.add(viagem);
         }
         catch (FeignException feignException){
-            throw new ApiErroException(HttpStatus.INTERNAL_SERVER_ERROR,"", "Não foi possível notificar a viagem ao sistema legado, tente novamente mais tarde");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Não foi possível notificar a viagem ao sistema legado, tente novamente mais tarde");
         }
     }
 
     public void adicionarCarteira(Carteira carteira, NotificaCarteira notificaCarteira) {
 
         if(possuiCarteira(carteira.getCarteira())){
-            throw new ApiErroException(HttpStatus.UNPROCESSABLE_ENTITY, "carteira", "Já existe essa carteira nesse cartão");
+            throw new RegraDeNegocioException( "carteira", "Já existe essa carteira nesse cartão", carteira);
         }
 
         NotificaCarteiraRequest notificaCarteiraRequest = new NotificaCarteiraRequest(carteira.getEmail(), carteira.getCarteira());
@@ -186,7 +186,7 @@ public class Cartao {
         }
         catch (FeignException feignException){
             System.out.println(feignException);
-            throw new ApiErroException(HttpStatus.INTERNAL_SERVER_ERROR,"" ,"Não foi possível notificar o sistema legado, tente novamente mais tarde");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Não foi possível notificar o sistema legado, tente novamente mais tarde");
         }
     }
 

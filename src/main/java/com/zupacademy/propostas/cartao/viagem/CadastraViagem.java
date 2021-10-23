@@ -3,6 +3,7 @@ package com.zupacademy.propostas.cartao.viagem;
 import com.zupacademy.propostas.cartao.Cartao;
 import com.zupacademy.propostas.cartao.CartaoRepository;
 import com.zupacademy.propostas.cartao.bloqueio.ValidaRequisicao;
+import com.zupacademy.propostas.commos.exceptions.NotFoundException;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class CadastraViagem {
     @ResponseStatus(HttpStatus.OK)
     @Transactional
     public void cadastraViagem(@PathVariable("id") Long id, @RequestBody @Valid ViagemRequest viagemRequest, HttpServletRequest request, @AuthenticationPrincipal Jwt jwt){
-        Cartao cartao = cartaoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existe cartão com o identificador informado"));
+        Cartao cartao = cartaoRepository.findById(id).orElseThrow(() -> new NotFoundException("Cartão", "id", id));
         validaRequisicao.valida(request, jwt);
         Viagem viagem = viagemRequest.toModel(request.getRemoteAddr(), request.getHeader("User-Agent"), cartao);
         cartao.adicionaViagem(viagem, jwt.getClaim("documento"), notificaViagem);

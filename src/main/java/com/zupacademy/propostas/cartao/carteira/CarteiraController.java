@@ -2,6 +2,7 @@ package com.zupacademy.propostas.cartao.carteira;
 
 import com.zupacademy.propostas.cartao.Cartao;
 import com.zupacademy.propostas.cartao.CartaoRepository;
+import com.zupacademy.propostas.commos.exceptions.NotFoundException;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class CarteiraController {
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity adicionaCarteira(@PathVariable("id") Long id, @RequestBody @Valid CarteiraRequest carteiraRequest, UriComponentsBuilder uriBuilder){
-        Cartao cartao = cartaoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existe cartão com a identificação recebida"));
+        Cartao cartao = cartaoRepository.findById(id).orElseThrow(() -> new NotFoundException("Cartão", "id", id));
 
         Carteira carteira = carteiraRequest.toModel(cartao);
         cartao.adicionarCarteira(carteira, notificaCarteira);

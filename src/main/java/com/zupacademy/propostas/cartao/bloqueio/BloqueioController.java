@@ -2,7 +2,7 @@ package com.zupacademy.propostas.cartao.bloqueio;
 
 import com.zupacademy.propostas.cartao.Cartao;
 import com.zupacademy.propostas.cartao.CartaoRepository;
-import com.zupacademy.propostas.commos.exceptions.ApiErroException;
+import com.zupacademy.propostas.commos.exceptions.NotFoundException;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class BloqueioController {
     @ResponseStatus(HttpStatus.OK)
     @Transactional
     public void bloqueiaCartao(@PathVariable("id") Long idCartao, HttpServletRequest request, @AuthenticationPrincipal Jwt jwt){
-        Cartao cartao = cartaoRepository.findById(idCartao).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não existe cartão com a identificação informada"));
+        Cartao cartao = cartaoRepository.findById(idCartao).orElseThrow(() -> new NotFoundException("Cartao", "id", idCartao));
 
         validaRequisicao.valida(request, jwt);
         cartao.bloqueia(request, request.getRemoteAddr(), request.getHeader("User-Agent"), jwt.getClaim("documento"), notificaBloqueio);
