@@ -1,25 +1,29 @@
 package com.zupacademy.propostas.commos.exceptions;
 
-import org.springframework.http.HttpStatus;
-
-public class RegraDeNegocioException extends RuntimeException{
-    private String field;
+public class NotFoundException extends RuntimeException{
+    private String entity;
     private String message;
+    private String field;
     private Object value;
 
-    public RegraDeNegocioException(String field, String message, Object value){
+    public NotFoundException(String entity, String field, Object value){
+        this.entity = entity;
         this.field = field;
-        this.message = message;
         this.value = value;
+        this.message = "Não existe " + entity + " com a identificação " + field + " = " + value.toString();
     }
 
-    public String getField() {
-        return field;
+    public String getEntity() {
+        return entity;
     }
 
     @Override
     public String getMessage() {
         return message;
+    }
+
+    public String getField() {
+        return field;
     }
 
     public Object getValue() {
