@@ -16,6 +16,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 
 @Entity
 public class Proposta {
@@ -31,7 +32,7 @@ public class Proposta {
     @NotBlank @Column(nullable = false)
     private String endereco;
     @NotNull @Positive @Column(nullable = false)
-    private Double salario;
+    private BigDecimal salario;
     @OneToOne(cascade = CascadeType.ALL)
     private Cartao cartao;
     @Enumerated(EnumType.STRING)
@@ -48,7 +49,7 @@ public class Proposta {
      * @param endereco
      * @param salario
      * */
-    public Proposta(@NotBlank String documento, @NotBlank String nome, @NotBlank @Email String email, @NotBlank String endereco, @NotNull @Positive Double salario) {
+    public Proposta(@NotBlank String documento, @NotBlank String nome, @NotBlank @Email String email, @NotBlank String endereco, @NotNull @Positive BigDecimal salario) {
         this.documento = documento;
         this.nome = nome;
         this.email = email;
@@ -76,7 +77,7 @@ public class Proposta {
         return endereco;
     }
 
-    public Double getSalario() {
+    public BigDecimal getSalario() {
         return salario;
     }
 

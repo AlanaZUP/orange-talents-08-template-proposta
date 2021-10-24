@@ -12,6 +12,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class PropostaRequest {
@@ -25,9 +26,9 @@ public class PropostaRequest {
     @NotBlank
     private String endereco;
     @NotNull @Positive
-    private Double salario;
+    private BigDecimal salario;
 
-    public PropostaRequest(String documento, String nome, String email, String endereco, Double salario) {
+    public PropostaRequest(String documento, String nome, String email, String endereco, BigDecimal salario) {
         this.documento = documento;
         this.nome = nome;
         this.email = email;

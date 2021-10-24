@@ -10,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 
 public class PropostaConsultaDTO {
 
@@ -18,7 +19,7 @@ public class PropostaConsultaDTO {
     private String nome;
     private String email;
     private String endereco;
-    private Double salario;
+    private BigDecimal salario;
     private Cartao cartao;
     private StatusProposta statusProposta;
 
@@ -53,7 +54,7 @@ public class PropostaConsultaDTO {
         return endereco;
     }
 
-    public Double getSalario() {
+    public BigDecimal getSalario() {
         return salario;
     }
 
