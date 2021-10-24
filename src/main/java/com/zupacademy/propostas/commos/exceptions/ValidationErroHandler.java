@@ -72,7 +72,7 @@ public class ValidationErroHandler {
 
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(RegraDeNegocioException.class)
+    @ExceptionHandler(NotFoundException.class)
     public StandardError handleNotFound(NotFoundException exception){
         List<ErroResponseNotFound> erros = new ArrayList<>();
         ErroResponseNotFound erro = new ErroResponseNotFound(exception.getEntity(), exception.getField(), exception.getValue(), exception.getMessage());
