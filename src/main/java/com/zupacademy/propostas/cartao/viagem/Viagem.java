@@ -34,7 +34,7 @@ public class Viagem {
     private LocalDate dateTermino;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime instanteAviso;
 
     @ManyToOne
