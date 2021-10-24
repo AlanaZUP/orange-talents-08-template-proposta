@@ -16,9 +16,9 @@ public class Biometria {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String uuid;
 
-    @NotBlank @Lob @IsBase64
+    @NotBlank @Lob @IsBase64 @Column(nullable = false)
     private String fingerprint;
-
+    @Column(nullable = false, updatable = false)
     private LocalDateTime instanteCriacao;
 
     @ManyToOne
