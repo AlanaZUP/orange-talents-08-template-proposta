@@ -22,15 +22,15 @@ public class Proposta {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank @Column(unique = true)
+    @NotBlank @Column(nullable = false, unique = true)
     private String documento;
-    @NotBlank
+    @NotBlank @Column(nullable = false)
     private String nome;
-    @NotBlank @Email
+    @NotBlank @Email @Column(nullable = false)
     private String email;
-    @NotBlank
+    @NotBlank @Column(nullable = false)
     private String endereco;
-    @NotNull @Positive
+    @NotNull @Positive @Column(nullable = false)
     private Double salario;
     @OneToOne(cascade = CascadeType.ALL)
     private Cartao cartao;
