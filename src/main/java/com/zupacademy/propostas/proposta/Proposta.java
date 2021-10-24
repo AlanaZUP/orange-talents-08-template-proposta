@@ -34,7 +34,7 @@ public class Proposta {
     private Double salario;
     @OneToOne(cascade = CascadeType.ALL)
     private Cartao cartao;
-
+    @Enumerated(EnumType.STRING)
     private StatusProposta statusProposta;
 
     @Deprecated
