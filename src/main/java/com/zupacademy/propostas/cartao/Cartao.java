@@ -47,7 +47,7 @@ public class Cartao {
     @NotNull
     @Column(nullable = false)
     private BigDecimal limite;
-
+    @Enumerated(EnumType.STRING)
     private StatusCartao statusCartao;
 
     @OneToOne
