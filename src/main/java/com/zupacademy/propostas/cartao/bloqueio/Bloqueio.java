@@ -15,12 +15,12 @@ public class Bloqueio {
     @ManyToOne
     private Cartao cartao;
 
-    @NotBlank
+    @NotBlank @Column(nullable = false)
     private String ip;
 
-    @NotBlank
+    @NotBlank @Column(nullable = false)
     private String userAgent;
-
+    @Column(nullable = false, updatable = false)
     private LocalDateTime instante;
 
     @Deprecated
